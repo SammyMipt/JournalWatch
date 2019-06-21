@@ -11,16 +11,20 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from configparser import ConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJ_DIR = os.path.dirname(BASE_DIR)
 
+config = ConfigParser()
+config.read(os.path.join(BASE_DIR, '../django.conf'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0dc4j8n44u!_$wmy!bi23-j+o67xlv3e^n+r7gzwjd-5kb%=#^'
+SECRET_KEY = config.get('main', 'SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,8 +79,11 @@ WSGI_APPLICATION = 'application.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config.get('db', 'NAME'),
+	'USER': config.get('db', 'USER'),
+        'PASSWORD': config.get('db', 'PASSWORD'),
+	'HOST': 'localhost',
     }
 }
 
