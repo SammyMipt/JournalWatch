@@ -1,0 +1,5 @@
+FLUID_DYNAMICS = 'FD'
+
+THEME_CHOICES = [
+    (FLUID_DYNAMICS, 'Fluid Dynamics'),
+]
