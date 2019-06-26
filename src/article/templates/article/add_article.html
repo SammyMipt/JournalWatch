@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
+        <center>
+            <h2>Add article</h2>
+            {% if form.errors %}
+                <p>Please, correct mistakes.</p>
+            {% endif %}
+            {% for field in form %}
+                <label>{{ field.label }}</label>
+                {% render_field field placeholder=field.label class+='form-control' %}
+                <br>
+            {% endfor %}
+            <div>
+                <input type="submit" value="Add">
+            </div>
+        </center>
+    </form>
+{% endblock %}
