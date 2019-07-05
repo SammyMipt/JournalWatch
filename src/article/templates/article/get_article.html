@@ -8,15 +8,18 @@
 {% block content %}
     <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
         <center>
-            <h2>Add article or <a href="{% url "get_article" %}">get journal watch</a></h2>
+            <h2>Get journal watch or <a href="{% url "add_article" %}">add_article</a></h2>
             {% if form.errors %}
-                <p>Please, enter DOI or add article file.</p>
+                <p>Please, enter both of dates.</p>
             {% endif %}
             {% for field in form %}
                 <label>{{ field.label }}</label>
                 {% render_field field placeholder=field.label class+='form-control' %}
                 <br>
             {% endfor %}
+        <input type="date" id="start" name="trip-start"
+       value="2018-07-22"
+       min="2018-01-01" max="2018-12-31">
             <div>
                 <input type="submit" value="Add">
             </div>
