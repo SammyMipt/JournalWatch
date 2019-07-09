@@ -6,9 +6,10 @@ from .themes import *
 class Article(Dated):
     DOI = models.CharField(max_length=255)
     theme = models.CharField(max_length=255, choices=THEME_CHOICES, default=FLUID_DYNAMICS)
-    title = models.CharField(max_length=255)
+    title = models.TextField(null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    keywords = models.TextField(null=True, blank=True)
     article_file = models.FileField(upload_to=u'articles/', null=True, blank=True)
     article_url = models.URLField(max_length=1023)
 
@@ -24,12 +25,3 @@ class Image(Dated):
     class Meta:
         verbose_name = u'картинка'
         verbose_name_plural = u'картинки'
-
-
-class Keyword(models.Model):
-    article = models.ForeignKey(Article, related_name='keywords', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, null=True, blank=False)
-
-    class Meta:
-        verbose_name = u'ключевое слово'
-        verbose_name_plural = u'ключевые слова'
