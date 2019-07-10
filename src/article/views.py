@@ -4,6 +4,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Q
+import io
+from django.http import FileResponse, HttpResponse
+from docx import Document
 
 from .models import Article
 from .forms import AddingForm, GettingForm
@@ -28,3 +31,14 @@ class GetArticles(ListView):
 
     def get_success_url(self):
         return reverse(self.success_url)
+
+
+def get_docx(request):
+    document = Document()
+    document.add_heading('Document Title', 0)
+    # Create the PDF object, using the buffer as its "file."
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=download.docx'
+    document.save(response)
+
+    return response

@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 
-def cleanhtml(raw_html):
+def clean_html(raw_html):
     clean_re = re.compile('<.*?>')
     clean_text = re.sub(clean_re, '', raw_html)
     return clean_text
@@ -30,7 +30,7 @@ def pre_save_article(sender, instance, **kwargs):
 def get_abstract(article_meta):
     abstract = str()
     if "abstract" in article_meta["message"]:
-        abstract = cleanhtml(article_meta["message"]["abstract"])
+        abstract = clean_html(article_meta["message"]["abstract"])
     return abstract.strip()
 
 
