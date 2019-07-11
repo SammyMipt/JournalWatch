@@ -35,7 +35,8 @@ class GetArticles(ListView):
 
 def get_docx(request):
     document = Document()
-    document.add_heading('Document Title', 0)
+    document.add_heading(str(request.GET.get("start")), 0)
+    document.add_heading(str(request.GET.get("end")), 0)
     # Create the PDF object, using the buffer as its "file."
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=download.docx'

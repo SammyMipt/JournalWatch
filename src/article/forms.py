@@ -23,13 +23,3 @@ class GettingForm(forms.Form):
         empty_label=("Choose Year", "Choose Month", "Choose Day"),
     ), label='End date',
         required=True)
-
-    # class Meta:
-    #     model = Article
-    # fields = ('created_at_start',)
-
-    # def clean(self):
-    #     if 'created_at1' in self.cleaned_data and 'created_at2' in self.cleaned_data:
-    #         if not self.cleaned_data['created_at1'] or not self.cleaned_data['created_at2']:
-    #             raise forms.ValidationError("Enter both of dates")
-    #     return self.cleaned_data

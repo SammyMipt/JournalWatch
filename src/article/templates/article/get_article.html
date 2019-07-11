@@ -2,22 +2,29 @@
 
 {% load staticfiles %}
 {% load widget_tweaks %}
+
 {% block head %}
+    <script type="text/javascript">
+        function getcube() {
+            var data_start = document.getElementById("start").value;
+            var data_end = document.getElementById("end").value;
+            return "{% url 'get_docx' %}?start=" + data_start + "&end=" + data_end;
+        }
+    </script>
 {% endblock %}
 
 {% block content %}
     <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
         <center>
             <h2>Get journal watch or <a href="{% url "add_article" %}">add_article</a></h2>
-
             <label for="start">Start date:</label>
             <input type="date" id="start" name="trip-start">
-                <br>
-        <label for="end">End date:</label>
+            <br>
+            <label for="end">End date:</label>
             <input type="date" id="end" name="trip-end">
             <br>
             <div>
-                <input type="button" value="Get" onclick="location.href='{% url "get_docx" %}';" >
+                <input type="button" value="Get" onclick="location.href = getcube()">
             </div>
         </center>
     </form>
