@@ -8,7 +8,15 @@
         function getcube() {
             var data_start = document.getElementById("start").value;
             var data_end = document.getElementById("end").value;
-            return "{% url 'get_docx' %}?start=" + data_start + "&end=" + data_end;
+
+            if (!data_start || 0 === data_start.length)
+                alert("Choose the Start date");
+            else if (!data_end || 0 === data_end.length)
+                alert("Choose the End date");
+            else if (new Date(data_start) > new Date(data_end))
+                alert("End date should be later, then Start date");
+            else
+                return window.open("{% url 'get_docx' %}?start=" + data_start + "&end=" + data_end);
         }
     </script>
 {% endblock %}
@@ -24,7 +32,7 @@
             <input type="date" id="end" name="trip-end">
             <br>
             <div>
-                <input type="button" value="Get" onclick="location.href = getcube()">
+                <input type="button" value="Get" onclick="getcube()">
             </div>
         </center>
     </form>

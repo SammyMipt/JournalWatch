@@ -7,6 +7,7 @@ from django.db.models import Q
 import io
 from django.http import FileResponse, HttpResponse
 from docx import Document
+from datetime import datetime
 
 from .models import Article
 from .forms import AddingForm, GettingForm
@@ -35,9 +36,10 @@ class GetArticles(ListView):
 
 def get_docx(request):
     document = Document()
-    document.add_heading(str(request.GET.get("start")), 0)
-    document.add_heading(str(request.GET.get("end")), 0)
-    # Create the PDF object, using the buffer as its "file."
+    start_date = datetime.strptime(str(request.GET.get("start")), "%Y-%m-%d")
+    end_date = datetime.strptime(str(request.GET.get("end")), "%Y-%m-%d")
+
+    articles = Article.objects.all().filter(created_at__range=(start_date, end_date))
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=download.docx'
     document.save(response)
