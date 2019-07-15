@@ -41,16 +41,12 @@ class GetArticles(ListView):
         return reverse(self.success_url)
 
 
+def add_head(paragraph, article):
+    add_hyperlink(paragraph, article.article_url, 'Link', '0000FF', True)
+    r = paragraph.add_run(" {0}".format(article.description))
+
+
 def add_hyperlink(paragraph, url, text, color, underline):
-    """
-    A function that places a hyperlink within a paragraph object.
-
-    :param paragraph: The paragraph we are adding the hyperlink to.
-    :param url: A string containing the required url
-    :param text: The text displayed for the url
-    :return: The hyperlink object
-    """
-
     # This gets access to the document.xml.rels file and gets a new relation id value
     part = paragraph.part
     r_id = part.relate_to(url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
@@ -132,8 +128,15 @@ def get_docx(request):
         document.add_heading(theme, level=1)
         for article in articles[theme]:
             document.add_heading(article.title, level=2)
+
             p = document.add_paragraph()
-            add_hyperlink(p, article.article_url, 'Link', '0000FF', True)
+            add_head(p, article)
+
+            p = document.add_paragraph(article.abstract)
+
+            if (article.keywords):
+                p = document.add_paragraph(article.keywords)
+
             document.add_page_break()
 
     # document.add_heading('Document Title', 0)
