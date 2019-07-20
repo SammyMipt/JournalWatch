@@ -5,7 +5,7 @@ from .themes import *
 
 class Article(Dated):
     DOI = models.CharField(max_length=255)
-    theme = models.CharField(max_length=255, choices=THEME_CHOICES, default=FLUID_DYNAMICS)
+    theme = models.CharField(max_length=255, choices=THEME_CHOICES, default=UNCLASSIFIED)
     title = models.TextField(null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)

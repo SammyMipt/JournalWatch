@@ -4,6 +4,9 @@ from django.dispatch import receiver
 from habanero import Crossref
 import re
 from datetime import datetime
+import requests
+from .excluded_publishers import publishers
+from bs4 import BeautifulSoup
 
 
 def clean_html(raw_html):
@@ -31,7 +34,26 @@ def get_abstract(article_meta):
     abstract = str()
     if "abstract" in article_meta["message"]:
         abstract = clean_html(article_meta["message"]["abstract"])
+    elif "publisher" in article_meta["message"] and\
+            article_meta["message"]["publisher"].lower() in publishers:
+        abstract = get_publishers_abstract(article_meta["message"]["publisher"].lower(), article_meta)
     return abstract.strip()
+
+
+def get_publishers_abstract(publisher, article_meta):
+    if publisher == publishers[0]:
+        return get_aps_abstract(article_meta)
+    else:
+        return ""
+
+
+def get_aps_abstract(article_meta):
+    full_html = requests.get(get_url(article_meta)).text
+    soup = BeautifulSoup(full_html, features="html.parser")
+    soup = soup.find(class_="article open abstract")
+    soup = soup.find(class_="content")
+    soup = soup.find("p")
+    return clean_html(str(soup))
 
 
 def get_title(article_meta):

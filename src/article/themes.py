@@ -1,5 +1,25 @@
-FLUID_DYNAMICS = 'FD'
+RHEOLOGY = "RL"
+WETTABILITY_AND_CAPILLARY_EFFECTS = "WACE"
+NUMERICAL_METHODS = "NM"
+FLOWS_IN_POROUS_MEDIA = "FIPM"
+INTERFACE_AND_SURFACE_THERMODYNAMICS = "IAST"
+POLYMERS_AND_COLLOIDS = "PAC"
+FLOW_MEASUREMENT_AND_VISUALIZATION = "FMAV"
+MULTIPHASE_FLOWS = "MF"
+FLOW_STABILITY_AND_TRANSITION = "FST"
+PARTICLE_LADEN_FLOWS = "PLF"
+UNCLASSIFIED = "UC"
 
 THEME_CHOICES = [
-    (FLUID_DYNAMICS, 'Fluid Dynamics'),
+    (RHEOLOGY, "Rheology"),
+    (WETTABILITY_AND_CAPILLARY_EFFECTS, "Wettability and Capillary Effects"),
+    (NUMERICAL_METHODS, "Numerical methods"),
+    (FLOWS_IN_POROUS_MEDIA, "Flows in Porous Media"),
+    (INTERFACE_AND_SURFACE_THERMODYNAMICS, "Interface and surface thermodynamics"),
+    (POLYMERS_AND_COLLOIDS, "Polymers and colloids"),
+    (FLOW_MEASUREMENT_AND_VISUALIZATION, "Flow measurement and visualization"),
+    (MULTIPHASE_FLOWS, "Multiphase flows"),
+    (FLOW_STABILITY_AND_TRANSITION, "Flow stability and transition"),
+    (PARTICLE_LADEN_FLOWS, "Particle-laden flows"),
+    (UNCLASSIFIED, "Unclassified"),
 ]

@@ -5,7 +5,7 @@ from .models import Article
 class AddingForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ('DOI', 'theme', "article_file",)
+        fields = ('DOI', 'theme',)
 
     def clean(self):
         if 'DOI' in self.cleaned_data and 'article_file' in self.cleaned_data:
