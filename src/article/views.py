@@ -9,7 +9,7 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .models import Article
 from .forms import AddingForm
@@ -102,14 +102,14 @@ def get_docx(request):
 
     document = Document()
     start_date = datetime.strptime(str(request.GET.get("start")), "%Y-%m-%d")
-    end_date = datetime.strptime(str(request.GET.get("end")), "%Y-%m-%d")
+    end_date = datetime.strptime(str(request.GET.get("end")), "%Y-%m-%d") + timedelta(days=1)
 
     all_articles = Article.objects.all().filter(created_at__range=(start_date, end_date))
     articles = dict()
     for theme_choice in THEME_CHOICES:
         articles[theme_choice[1]] = all_articles.all().filter(theme=theme_choice[0])
 
-    document.add_paragraph('Table of Contents', style='TOCHeading')
+    document.add_paragraph('Table of Contents', style='TOC Heading')
     paragraph = document.add_paragraph()
     add_toc(paragraph)
 
