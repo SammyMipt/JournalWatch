@@ -1,12 +1,15 @@
-from django.db.models.signals import pre_save
-from .models import Article
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.files import File
 from habanero import Crossref
-import re
 from datetime import datetime
-import requests
+from urllib import request
+import re
+import os
+
+from .models import Article
 from .excluded_publishers import publishers
-from bs4 import BeautifulSoup
+from .excluded_publishers_info import get_aps_abstract, get_aps_image_url
 
 
 def clean_html(raw_html):
@@ -15,17 +18,23 @@ def clean_html(raw_html):
     return clean_text
 
 
-@receiver(pre_save, sender=Article, dispatch_uid="update_stock_count")
+@receiver(post_save, sender=Article, dispatch_uid="add_article")
 def pre_save_article(sender, instance, **kwargs):
     try:
-        instance.DOI = instance.DOI.strip()
-        cr = Crossref()
-        article_meta = cr.works(ids=instance.DOI)
-        instance.abstract = get_abstract(article_meta)
-        instance.title = get_title(article_meta)
-        instance.description = get_description(article_meta)
-        instance.keywords = get_keywords(article_meta)
-        instance.article_url = get_url(article_meta)
+        if not instance.image_file and not instance.image_url:
+            print("save")
+            cr = Crossref()
+            article_meta = cr.works(ids=instance.DOI)
+            instance.DOI = instance.DOI.strip()
+            instance.abstract = get_abstract(article_meta)
+            instance.title = get_title(article_meta)
+            instance.description = get_description(article_meta)
+            instance.keywords = get_keywords(article_meta)
+            instance.article_url = get_url(article_meta)
+
+            if not instance.image_file:
+                instance.image_url = get_image_url(article_meta)
+
     except Exception as e:
         print('%s (%s)' % (str(e), type(e)))
 
@@ -42,18 +51,26 @@ def get_abstract(article_meta):
 
 def get_publishers_abstract(publisher, article_meta):
     if publisher == publishers[0]:
-        return get_aps_abstract(article_meta)
+        return clean_html(get_aps_abstract(get_url(article_meta)))
     else:
         return ""
 
 
-def get_aps_abstract(article_meta):
-    full_html = requests.get(get_url(article_meta)).text
-    soup = BeautifulSoup(full_html, features="html.parser")
-    soup = soup.find(class_="article open abstract")
-    soup = soup.find(class_="content")
-    soup = soup.find("p")
-    return clean_html(str(soup))
+def get_image_url(article_meta):
+    abstract = str()
+    if "abstract" in article_meta["message"]:
+        abstract = clean_html(article_meta["message"]["abstract"])
+    elif "publisher" in article_meta["message"] and\
+            article_meta["message"]["publisher"].lower() in publishers:
+        abstract = get_publishers_image_url(article_meta["message"]["publisher"].lower(), article_meta)
+    return abstract.strip()
+
+
+def get_publishers_image_url(publisher, article_meta):
+    if publisher == publishers[0]:
+        return clean_html(get_aps_image_url(get_url(article_meta)))
+    else:
+        return ""
 
 
 def get_title(article_meta):

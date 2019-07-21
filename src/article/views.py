@@ -16,7 +16,7 @@ from docx.enum.dml import MSO_THEME_COLOR_INDEX
 from datetime import datetime
 
 from .models import Article
-from .forms import AddingForm, GettingForm
+from .forms import AddingForm
 from .themes import THEME_CHOICES
 
 
@@ -33,9 +33,7 @@ class AddArticle(CreateView):
 class GetArticles(ListView):
     model = Article
     template_name = 'article/get_article.html'
-    form_class = GettingForm
     success_url = 'get_article'
-    fields = ('created_at_start',)
 
     def get_success_url(self):
         return reverse(self.success_url)

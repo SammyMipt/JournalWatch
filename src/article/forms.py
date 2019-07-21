@@ -12,14 +12,3 @@ class AddingForm(forms.ModelForm):
             if not self.cleaned_data['DOI'] and not self.cleaned_data['article_file']:
                 raise forms.ValidationError("You should enter DOI or give me the article itself, please.")
         return self.cleaned_data
-
-
-class GettingForm(forms.Form):
-    created_at_start = forms.DateTimeField(widget=forms.widgets.SelectDateWidget(
-        empty_label=("Choose Year", "Choose Month", "Choose Day"),
-    ), label='Start date',
-        required=True)
-    created_at_end = forms.DateTimeField(widget=forms.widgets.SelectDateWidget(
-        empty_label=("Choose Year", "Choose Month", "Choose Day"),
-    ), label='End date',
-        required=True)
