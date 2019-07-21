@@ -20,7 +20,6 @@ class Article(Dated):
     image_url = models.URLField(max_length=1023, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-
         super(Article, self).save()
 
         if self.image_url and not self.image_file:
@@ -33,12 +32,3 @@ class Article(Dated):
     class Meta:
         verbose_name = u'статья'
         verbose_name_plural = u'статьи'
-
-
-class Image(Dated):
-    article = models.ForeignKey(Article, related_name='images', on_delete=models.CASCADE)
-    image_file = models.FileField(upload_to=u'images/', null=True, blank=False)
-
-    class Meta:
-        verbose_name = u'картинка'
-        verbose_name_plural = u'картинки'

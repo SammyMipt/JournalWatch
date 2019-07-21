@@ -1,11 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.files import File
 from habanero import Crossref
 from datetime import datetime
-from urllib import request
 import re
-import os
 
 from .models import Article
 from .excluded_publishers import publishers
@@ -19,10 +16,9 @@ def clean_html(raw_html):
 
 
 @receiver(post_save, sender=Article, dispatch_uid="add_article")
-def pre_save_article(sender, instance, **kwargs):
+def post_save_article(sender, instance, **kwargs):
     try:
         if not instance.image_file and not instance.image_url:
-            print("save")
             cr = Crossref()
             article_meta = cr.works(ids=instance.DOI)
             instance.DOI = instance.DOI.strip()
@@ -43,7 +39,7 @@ def get_abstract(article_meta):
     abstract = str()
     if "abstract" in article_meta["message"]:
         abstract = clean_html(article_meta["message"]["abstract"])
-    elif "publisher" in article_meta["message"] and\
+    elif "publisher" in article_meta["message"] and \
             article_meta["message"]["publisher"].lower() in publishers:
         abstract = get_publishers_abstract(article_meta["message"]["publisher"].lower(), article_meta)
     return abstract.strip()
@@ -60,7 +56,7 @@ def get_image_url(article_meta):
     abstract = str()
     if "abstract" in article_meta["message"]:
         abstract = clean_html(article_meta["message"]["abstract"])
-    elif "publisher" in article_meta["message"] and\
+    elif "publisher" in article_meta["message"] and \
             article_meta["message"]["publisher"].lower() in publishers:
         abstract = get_publishers_image_url(article_meta["message"]["publisher"].lower(), article_meta)
     return abstract.strip()
@@ -90,8 +86,8 @@ def get_description(article_meta):
         time = str()
         if "created" in article_meta["message"]:
             if "timestamp" in article_meta["message"]["created"]:
-                time = datetime.fromtimestamp(article_meta["message"]["created"]["timestamp"] / 1000)\
-                                                                                .strftime("%d %B %Y")
+                time = datetime.fromtimestamp(article_meta["message"]["created"]["timestamp"] / 1000) \
+                    .strftime("%d %B %Y")
         description += "{0} - Published {1}".format(article_meta["message"]["DOI"], time)
     return description.strip()
 
