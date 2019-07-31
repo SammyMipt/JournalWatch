@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from urllib import request
@@ -18,6 +19,8 @@ class Article(Dated):
     article_url = models.URLField(max_length=1023)
     image_file = models.ImageField(upload_to=u'images/', null=True, blank=True)
     image_url = models.URLField(max_length=1023, null=True, blank=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='articles', on_delete=models.CASCADE, null=True,
+                               blank=False)
 
     def save(self, *args, **kwargs):
         super(Article, self).save()
