@@ -19,18 +19,25 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
-        <center>
-            <h2>Get journal watch or <a href="{% url "add_article" %}">add_article</a></h2>
-            <label for="start">Start date:</label>
-            <input type="date" id="start" name="trip-start">
-            <br>
-            <label for="end">End date:</label>
-            <input type="date" id="end" name="trip-end">
-            <br>
-            <div>
-                <input type="button" value="Get" onclick="getcube()">
+    <div class="signin">
+        <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
+            <div class="form-signin">
+                <h2 class="form-signin-heading">Get journal watch</h2>
+                <br>
+                <div class="form-group">
+                    <label for="start">Start date:</label>
+                    <input class="form-control" type="date" id="start" name="trip-start">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="end">End date:</label>
+                    <input class="form-control" type="date" id="end" name="trip-end">
+                </div>
+                <br>
+                <div>
+                    <input class="btn btn-lg btn-primary btn-block" type="button" value="Get" onclick="getcube()">
+                </div>
             </div>
-        </center>
-    </form>
+        </form>
+    </div>
 {% endblock %}
