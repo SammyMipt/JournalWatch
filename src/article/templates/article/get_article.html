@@ -2,17 +2,20 @@
 
 {% block head %}
     <script type="text/javascript">
-        function getcube() {
+        function get_journal_watch() {
             var data_start = document.getElementById("start").value;
             var data_end = document.getElementById("end").value;
 
-            if (!data_start || 0 === data_start.length)
-                alert("Choose the Start date");
-            else if (!data_end || 0 === data_end.length)
-                alert("Choose the End date");
-            else if (new Date(data_start) > new Date(data_end))
-                alert("End date should be later, then Start date");
-            else
+            if (!data_start || 0 === data_start.length) {
+                $('#modal').find('.modal-body').text("Choose the Start date");
+                $('#modal').modal('show');
+            } else if (!data_end || 0 === data_end.length) {
+                $('#modal').find('.modal-body').text("Choose the End date");
+                $('#modal').modal('show');
+            } else if (new Date(data_start) > new Date(data_end)) {
+                $('#modal').find('.modal-body').text("End date should be later, then Start date");
+                $('#modal').modal('show');
+            } else
                 return window.open("{% url 'get_docx' %}?start=" + data_start + "&end=" + data_end);
         }
     </script>
@@ -35,7 +38,8 @@
                 </div>
                 <br>
                 <div>
-                    <input class="btn btn-lg btn-primary btn-block" type="button" value="Get" onclick="getcube()">
+                    <input class="btn btn-lg btn-primary btn-block" type="button" value="Get"
+                           onclick="get_journal_watch()">
                 </div>
             </div>
         </form>
