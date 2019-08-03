@@ -130,3 +130,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media/')
 
 AUTH_USER_MODEL = 'core.User'
+
+LOGIN_REDIRECT_URL = "add_article"
+LOGOUT_REDIRECT_URL = "add_article"
+LOGIN_URL = "login"

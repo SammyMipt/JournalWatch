@@ -29,33 +29,47 @@
     <div class="collapse navbar-collapse justify-content-md-center">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url "add_article" %}">Add article</a>
+                <a class="nav-link active" href="{% url "add_article" %}">Add article</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url "get_article" %}">Get journal watch</a>
+                <a class="nav-link active" href="{% url "get_article" %}">Get journal watch</a>
             </li>
+            {% if user.is_superuser %}
+                <li class="nav-item">
+                <a class="nav-link active" href="{% url "admin:index" %}">Go to admin panel</a>
+            </li>
+            {% endif %}
         </ul>
+    {% block nav_items %}
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <li><a class="nav-item nav-link" href="{% url 'logout' %}">Log out</a></li>
+            {% else %}
+                <li><a class="nav-item nav-link" href="{% url 'login' %}">Log in</a></li>
+            {% endif %}
+        </ul>
+    {% endblock %}
     </div>
 </nav>
 
 <!-- Modal -->
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLongTitle">Error</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLongTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
-  </div>
 </div>
 
 {% block content %}

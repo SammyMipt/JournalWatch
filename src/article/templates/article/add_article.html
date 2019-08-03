@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="signin">
+    <div class="signin" align="center">
         <form method="post" enctype="multipart/form-data" class="form-control-file"> {% csrf_token %}
             <div class="form-signin">
                 <h2 class="form-signin-heading">Add article</h2>
@@ -19,7 +19,12 @@
                     <br>
                 {% endfor %}
                 <div>
-                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Add">
+                    {% if user.is_authenticated %}
+                        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Add">
+                    {% else %}
+                        <input class="btn btn-lg btn-primary btn-block disabled" type="submit" value="Please, log in"
+                               disabled>
+                    {% endif %}
                 </div>
             </div>
         </form>

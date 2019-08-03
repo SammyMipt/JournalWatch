@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+
+{% block nav_items %}
+    <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <li><a class="nav-item nav-link active" href="{% url 'logout' %}?next={% url 'add_article' %}">Log out</a></li>
+            {% else %}
+                <li><a class="nav-item nav-link active" href="{% url 'admin:index' %}">Log in as admin</a></li>
+            {% endif %}
+        </ul>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="signin" align="center">
+        {% if form.errors %}
+            <p>Your username or password didn't match. Please try again.</p>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p>Your account doesn't have access to this page. To proceed,
+                    please login with an account that has access.</p>
+            {% else %}
+                <p>Please login to see this page.</p>
+            {% endif %}
+        {% endif %}
+        <div class="container">
+            <form class="form-signin" method="post">
+                {% csrf_token %}
+                <h2 class="form-signin-heading">Log in</h2>
+                {% render_field form.username|attr:'autofocus' placeholder='Username' class+='form-control' %}
+                {% render_field form.password placeholder='Password' class+='form-control' %}
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="login"/>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -22,6 +22,10 @@ class AddArticle(CreateView):
     form_class = AddingForm
     success_url = 'add_article'
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(AddArticle, self).form_valid(form)
+
     def get_success_url(self):
         return reverse(self.success_url)
 
