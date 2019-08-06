@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=lesnik
+Group=www-data
+WorkingDirectory=/home/lesnik/JournalWatch/src/
+ExecStart=/home/lesnik/JournalWatch/env/bin/gunicorn --reload --workers 4 -b 0.0.0.0:8000 application.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
