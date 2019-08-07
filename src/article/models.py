@@ -35,3 +35,6 @@ class Article(Dated):
     class Meta:
         verbose_name = u'статья'
         verbose_name_plural = u'статьи'
+
+    def __str__(self):
+        return self.title
