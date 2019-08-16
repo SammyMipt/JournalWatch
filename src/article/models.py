@@ -9,8 +9,8 @@ from .themes import *
 
 
 class Article(Dated):
-    DOI = models.CharField(max_length=255)
-    theme = models.CharField(max_length=255, choices=THEME_CHOICES, default=UNCLASSIFIED)
+    DOI = models.CharField(max_length=191)
+    theme = models.CharField(max_length=191, choices=THEME_CHOICES, default=UNCLASSIFIED)
     title = models.TextField(null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -33,8 +33,8 @@ class Article(Dated):
             self.image_file.save(self.DOI, File(img_temp))
 
     class Meta:
-        verbose_name = u'статья'
-        verbose_name_plural = u'статьи'
+        verbose_name = 'Article'
+        verbose_name_plural = 'Articles'
 
     def __str__(self):
         return self.title
