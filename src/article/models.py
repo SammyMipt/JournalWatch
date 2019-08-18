@@ -1,11 +1,12 @@
 from django.db import models
 from django.conf import settings
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
-from urllib import request
+from habanero import Crossref
+
+import validators
 
 from core.models import Dated
 from .themes import *
+from .signals import *
 
 
 class Article(Dated):
@@ -15,26 +16,30 @@ class Article(Dated):
     abstract = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     keywords = models.TextField(null=True, blank=True)
-    article_file = models.FileField(upload_to=u'articles/', null=True, blank=True)
     article_url = models.URLField(max_length=1023)
-    image_file = models.ImageField(upload_to=u'images/', null=True, blank=True)
     image_url = models.URLField(max_length=1023, null=True, blank=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='articles', on_delete=models.CASCADE, null=True,
                                blank=False)
 
     def save(self, *args, **kwargs):
-        super(Article, self).save()
+        cr = Crossref()
+        article_meta = cr.works(ids=self.DOI)
+        self.DOI = self.DOI.strip()
+        self.abstract = get_abstract(article_meta)
+        self.title = get_title(article_meta)
+        self.description = get_description(article_meta)
+        self.keywords = get_keywords(article_meta)
+        self.article_url = get_url(article_meta)
+        self.image_url = get_image_url(article_meta)
 
-        if self.image_url and not self.image_file:
-            img_temp = NamedTemporaryFile(delete=True)
-            img_temp.write(request.urlopen(self.image_url).read())
-            img_temp.flush()
-            self.image_url = ''
-            self.image_file.save(self.DOI, File(img_temp))
+        if not validators.url(self.image_url):
+            self.image_url = ""
+
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
 
     def __str__(self):
-        return self.title
+        return str(self.title) if self.title else ""

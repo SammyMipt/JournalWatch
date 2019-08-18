@@ -27,7 +27,7 @@ config.read(os.path.join(BASE_DIR, '../django.conf'))
 SECRET_KEY = config.get('main', 'SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': config.get('db', 'NAME'),
         'USER': config.get('db', 'USER'),
         'PASSWORD': config.get('db', 'PASSWORD'),
-        'HOST': 'db',
+        'HOST': 'localhost' if DEBUG else 'db',
         'PORT': 3306,
         'OPTIONS': {'charset': 'utf8mb4'},
     }
@@ -124,15 +124,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(PROJECT_DIR, 'static/')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+if DEBUG:
+    STATIC_ROOT = os.path.join(PROJECT_DIR, 'static/')
+else:
+    STATIC_ROOT = '/static'
 
-MEDIA_URL = '/media/'
-#MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media/')
 
-STATIC_ROOT = '../static/'
-MEDIA_ROOT = '../media/'
+MEDIA_URL = '/uploads/'
+if DEBUG:
+    MEDIA_ROOT = os.path.join(PROJECT_DIR, 'uploads')
+else:
+    MEDIA_ROOT = '/uploads'
+
 
 AUTH_USER_MODEL = 'core.User'
 

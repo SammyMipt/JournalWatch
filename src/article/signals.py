@@ -1,10 +1,6 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from habanero import Crossref
 from datetime import datetime
 import re
 
-from .models import Article
 from .excluded_publishers import publishers
 from .excluded_publishers_info import get_aps_abstract, get_aps_image_url
 
@@ -13,26 +9,6 @@ def clean_html(raw_html):
     clean_re = re.compile('<.*?>')
     clean_text = re.sub(clean_re, '', raw_html)
     return clean_text
-
-
-@receiver(post_save, sender=Article, dispatch_uid="add_article")
-def post_save_article(sender, instance, **kwargs):
-    try:
-        if not instance.image_file and not instance.image_url:
-            cr = Crossref()
-            article_meta = cr.works(ids=instance.DOI)
-            instance.DOI = instance.DOI.strip()
-            instance.abstract = get_abstract(article_meta)
-            instance.title = get_title(article_meta)
-            instance.description = get_description(article_meta)
-            instance.keywords = get_keywords(article_meta)
-            instance.article_url = get_url(article_meta)
-
-            if not instance.image_file:
-                instance.image_url = get_image_url(article_meta)
-
-    except Exception as e:
-        print('%s (%s)' % (str(e), type(e)))
 
 
 def get_abstract(article_meta):
@@ -53,13 +29,11 @@ def get_publishers_abstract(publisher, article_meta):
 
 
 def get_image_url(article_meta):
-    abstract = str()
-    if "abstract" in article_meta["message"]:
-        abstract = clean_html(article_meta["message"]["abstract"])
-    elif "publisher" in article_meta["message"] and \
+    image_url = str()
+    if "publisher" in article_meta["message"] and \
             article_meta["message"]["publisher"].lower() in publishers:
-        abstract = get_publishers_image_url(article_meta["message"]["publisher"].lower(), article_meta)
-    return abstract.strip()
+        image_url = get_publishers_image_url(article_meta["message"]["publisher"].lower(), article_meta)
+    return image_url.strip()
 
 
 def get_publishers_image_url(publisher, article_meta):

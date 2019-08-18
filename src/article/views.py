@@ -9,7 +9,9 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 import os
+import requests
 from datetime import datetime, timedelta
+from io import BytesIO
 
 from .models import Article
 from .forms import AddingForm
@@ -101,8 +103,6 @@ def add_toc(paragraph):
 def get_docx(request):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     project_dir = os.path.dirname(base_dir)
-    media_dir = os.path.join(project_dir, "media")
-    images_dir = os.path.join(media_dir, "images")
 
     document = Document()
     start_date = datetime.strptime(str(request.GET.get("start")), "%Y-%m-%d")
@@ -128,7 +128,11 @@ def get_docx(request):
                 p = document.add_paragraph()
                 add_head(p, article)
 
-                document.add_picture(os.path.join(images_dir, article.DOI), width=Inches(5.5))
+                if article.image_url:
+                    image_response = requests.get(article.image_url)
+                    binary_img = BytesIO(image_response.content)
+                    document.add_picture(binary_img, width=Inches(5.5))
+
                 document.add_paragraph(article.abstract)
 
                 if article.keywords:
