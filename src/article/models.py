@@ -1,12 +1,8 @@
 from django.db import models
 from django.conf import settings
-from habanero import Crossref
-
-import validators
 
 from core.models import Dated
 from .themes import *
-from .signals import *
 
 
 class Article(Dated):
@@ -20,22 +16,6 @@ class Article(Dated):
     image_url = models.URLField(max_length=1023, null=True, blank=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='articles', on_delete=models.CASCADE, null=True,
                                blank=False)
-
-    def save(self, *args, **kwargs):
-        cr = Crossref()
-        article_meta = cr.works(ids=self.DOI)
-        self.DOI = self.DOI.strip()
-        self.abstract = get_abstract(article_meta)
-        self.title = get_title(article_meta)
-        self.description = get_description(article_meta)
-        self.keywords = get_keywords(article_meta)
-        self.article_url = get_url(article_meta)
-        self.image_url = get_image_url(article_meta)
-
-        if not validators.url(self.image_url):
-            self.image_url = ""
-
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Article'

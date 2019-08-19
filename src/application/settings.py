@@ -27,7 +27,7 @@ config.read(os.path.join(BASE_DIR, '../django.conf'))
 SECRET_KEY = config.get('main', 'SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -145,3 +145,11 @@ AUTH_USER_MODEL = 'core.User'
 LOGIN_REDIRECT_URL = "add_article"
 LOGOUT_REDIRECT_URL = "add_article"
 LOGIN_URL = "login"
+
+
+# CELERY
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

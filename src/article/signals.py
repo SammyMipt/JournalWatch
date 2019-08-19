@@ -1,14 +1,29 @@
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+
+from habanero import Crossref
 from datetime import datetime
-import re
 
+from .models import Article
 from .excluded_publishers import publishers
-from .excluded_publishers_info import get_aps_abstract, get_aps_image_url
+from .excluded_publishers_info import get_aps_abstract, get_aps_image_url, clean_html
 
 
-def clean_html(raw_html):
-    clean_re = re.compile('<.*?>')
-    clean_text = re.sub(clean_re, '', raw_html)
-    return clean_text
+@receiver(pre_save, sender=Article, dispatch_uid="add_article_pre_save")
+def pre_save_article(sender, instance, **kwargs):
+    cr = Crossref()
+    article_meta = cr.works(ids=instance.DOI)
+    instance.DOI = instance.DOI.strip()
+    instance.title = get_title(article_meta)
+    instance.description = get_description(article_meta)
+    instance.keywords = get_keywords(article_meta)
+    instance.article_url = get_url(article_meta)
+
+
+@receiver(post_save, sender=Article, dispatch_uid="add_article_post_save")
+def post_save_article(sender, instance, **kwargs):
+    from .tasks import async_post_save_article_info
+    async_post_save_article_info.delay(doi=instance.DOI)
 
 
 def get_abstract(article_meta):

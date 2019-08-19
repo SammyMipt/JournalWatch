@@ -8,7 +8,6 @@ from docx.shared import Inches
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
-import os
 import requests
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -101,9 +100,6 @@ def add_toc(paragraph):
 
 
 def get_docx(request):
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    project_dir = os.path.dirname(base_dir)
-
     document = Document()
     start_date = datetime.strptime(str(request.GET.get("start")), "%Y-%m-%d")
     end_date = datetime.strptime(str(request.GET.get("end")), "%Y-%m-%d") + timedelta(days=1)

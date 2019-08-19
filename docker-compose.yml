@@ -22,6 +22,8 @@ services:
        MYSQL_USER: 'lesnik'
        MYSQL_PASSWORD: ',tkrf'
        MYSQL_ROOT_PASSWORD: ',tkrf'
+  redis:
+    image: "redis:alpine"
   web:
     build: .
     container_name: django01
@@ -33,3 +35,19 @@ services:
       - "8080"
     depends_on:
       - db
+  celery:
+    build: .
+    command: celery -A application worker -l info
+    volumes:
+      - ./src:/src
+    depends_on:
+      - db
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A application beat -l info
+    volumes:
+      - ./src:/src
+    depends_on:
+      - db
+      - redis
